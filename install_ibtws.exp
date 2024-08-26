@@ -1,0 +1,14 @@
+#!/usr/bin/expect -f
+
+set timeout -1
+
+spawn /tmp/tws-stable-linux-x64.sh
+
+expect "/root/Jts"
+send "\r"
+
+expect "n, Enter"
+send "n\r"
+
+expect eof
+
