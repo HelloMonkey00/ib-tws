@@ -1,17 +1,19 @@
-FROM ubuntu:24.04
+FROM ubuntu:20.04
 
 # 设置环境变量
 ENV VNC_LISTEN_ADDRESS=127.0.0.1
 ENV VNC_PASSWORD_FILE=/etc/vnc_password
 ENV VNC_PORT=5903
 ENV SSH_PORT=2223
+# 设置XDG_RUNTIME_DIR环境变量
+ENV XDG_RUNTIME_DIR=/tmp/runtime
+ENV IB_TWS_MAX_MEMORY=2048m
 
 # 安装必要的软件包
 RUN apt-get update && apt-get install -y \
     x11vnc \
     xvfb \
     fluxbox \
-    xterm \ 
     expect \
     wget \
     openssh-server \
@@ -45,6 +47,9 @@ RUN chmod 400 ${VNC_PASSWORD_FILE}
 
 # 设置VNC密码
 RUN mkdir ~/.vnc && x11vnc -storepasswd $(cat $VNC_PASSWORD_FILE) ~/.vnc/passwd
+
+# 确保XDG_RUNTIME_DIR目录存在并设置权限
+RUN mkdir -p ${XDG_RUNTIME_DIR} && chmod 700 ${XDG_RUNTIME_DIR}
 
 # 复制启动脚本
 COPY start.sh /start.sh
